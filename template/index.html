@@ -1,0 +1,51 @@
+<html lang="en">
+    <head>
+        <title>URL shortner</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            var post_url = 'http://127.0.0.1:8000/api/urls/';
+            var data = {}
+            $.ajax({
+                type: 'GET',
+                url: post_url,
+                success: function(res){
+                    data = res;
+                    let tr = '<tr><td><b> Short URL: </b></td><td><b> Visits: </b></td><td><b> Complete URL: </b></td></tr>';
+                    res.forEach(function(value) {
+                        tr += ` <tr>
+                                    <td><form action="/api/urls/" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="visits" value="${value.visits}">
+                                        <input type="hidden" name="complete_url" value="${value.complete_url}">
+                                        <button type="submit" onclick="window.open('${value.complete_url}','_blank');"> ${value.shortened_url} </button></form>
+                                    </td>
+                                    <td> ${value.visits} </td>
+                                    <td> ${value.complete_url} </td>
+                                </tr>`;
+                    });
+                    document.querySelector('#table_id').innerHTML = tr;
+                },
+                error: function(error) {
+                    callbackErr(error,self)
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <form action="/api/urls/" method="POST">
+                {% csrf_token %}
+                <div>
+                    <label for="complete_url">Enter real URL: </label>
+                    <input type="url" id="complete_url" pattern="https://.*" name="complete_url" required>
+                </div>
+                <button type="submit">Generate short URL!</button>
+            </form>
+        </div>
+
+        <div id="links">
+        </div>
+
+        <table id="table_id">
+        </table>
+    </body>
+</html>
