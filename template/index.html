@@ -11,7 +11,7 @@
                 success: function(res){
                     data = res;
                     let tr = '<tr><td><b> Short URL: </b></td><td><b> Visits: </b></td><td><b> Complete URL: </b></td></tr>';
-                    res.forEach(function(value) {
+                    res.forEach(function(value) { 
                         tr += ` <tr>
                                     <td><form action="/api/urls/" method="POST">{% csrf_token %}
                                         <input type="hidden" name="visits" value="${value.visits}">
